@@ -1,0 +1,353 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  API
+
+  Sample SAM Template for API
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+Resources:
+
+  #DynamoDB
+  Dynamodb:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeDefinition
+      BillingMode: String
+      ContributorInsightsSpecification: 
+        - ContributorInsightsSpecification
+      DeletionProtectionEnabled: Boolean
+      GlobalSecondaryIndexes: 
+        - GlobalSecondaryIndex
+      ImportSourceSpecification: 
+        - ImportSourceSpecification
+      KeySchema: Json
+      KinesisStreamSpecification: 
+        - KinesisStreamSpecification
+      LocalSecondaryIndexes: 
+        - LocalSecondaryIndex
+      PointInTimeRecoverySpecification: 
+        - PointInTimeRecoverySpecification
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification: 
+        - SSESpecification
+      StreamSpecification: 
+        - StreamSpecification
+      TableClass: String
+      TableName: Usuarios
+      Tags: 
+        - Tag
+      TimeToLiveSpecification: 
+        - TimeToLiveSpecification
+
+  #Rol Sirve para conectar las funciones Lambda con la base de datos Dynamodb
+  IAM:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Description: String
+      ManagedPolicyArns: 
+        - String
+      MaxSessionDuration: Integer
+      Path: String
+      PermissionsBoundary: String
+      Policies:
+          - PolicyName: acceso-dynamodb
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement: 
+                  - Effect: Allow
+                    Action:
+                    - dynamodb:CreateTable
+                    - dynamodb:PutItem
+                    - dynamodb:DescribeTable
+                    - dynamodb:DeleteItem
+                    - dynamodb:GetItem
+                    - dynamodb:Scan
+                    - dynamodb:Query
+                    - dynamodb:UpdateItem
+                    - dynamodb:DeleteTable
+                    - dynamodb:UpdateTable
+                    Resource: arn
+      RoleName: lambda-dynamodb-role
+      Tags: 
+        - Tag
+
+  #POST 4
+  Lambda4:
+      Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+      Properties:
+        CodeUri: lambdas/
+        Handler: POST_4.lambda_handler
+        Timeout: 300
+        Runtime: python3.8
+        Architectures:
+        - x86_64
+        Events:
+          Postear:
+            Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+            Properties:
+              Path: /usuario/{id}
+              Method: POST
+
+  #GET 5
+  Lambda5:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: GET_5.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Get_User_ID:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /usuario/{id}
+            Method: GET
+  #DELETE 6
+  Lambda6:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: DELETE_6.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Delete_User:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /usuario/{id}
+            Method: DELETE
+
+  #PUT 7
+  Lambda7:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: PUT_7.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Update_User:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /usuario/{id}
+            Method: PUT
+  #GET 8
+  Lambda8:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: GET_8.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Get_Users:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /usuario
+            Method: GET
+
+  #GET 9
+  Lambda9:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: GET_9.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Get_Genere_User:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /genero/{id}
+            Method: GET
+
+  #GET 10
+  Lambda10:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: GET_10.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Get_Mayor:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /mayor/
+            Method: GET
+
+  #Registrar 11
+  RegistrarUsuario:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: Signin.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Registrar:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /signin
+            Method: POST
+
+  #12 Iniciar Sesion
+  IniciarSesion:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: Login.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Ingresar:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /login
+            Method: POST
+
+  #13 Confirmar
+  Confirmar:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: Confirm.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Cofirmar_Registro:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /confirm
+            Method: POST
+
+  #14 Reenviar Codigo
+  Reenviar:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: Resend.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Reenviar_Codigo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /resend
+            Method: POST
+    
+  #15 Obtener Usuario
+  ObtenerUsuario:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: Get_User.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Get_User:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /token
+            Method: POST
+
+  #16 Resetear Contrasena
+  ResetearPassword:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: Reset.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Reset:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /reset
+            Method: POST
+  
+  #16 Restablecer Contrasena
+  RestablecerContrasena:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambdas/
+      Handler: Restablish.lambda_handler
+      Timeout: 300
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Events:
+        Restablish:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /newpass
+            Method: POST
+  
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  HelloWorldFunction:
+    Description: Hello World Lambda Function ARN
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value: !GetAtt HelloWorldFunctionRole.Arn
