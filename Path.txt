@@ -1,7 +1,0 @@
-/usuario/{id}	POST
-/usuario/{id}	GET
-/usuario/{id}	DELETE
-/usuario/{id}	PUT
-/usuario	GET
-/genero/{id}	GET
-/mayor/		GET
